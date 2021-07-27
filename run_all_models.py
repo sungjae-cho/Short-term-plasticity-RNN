@@ -4,10 +4,10 @@ import model
 import sys
 
 
-def try_model(gpu_id):
+def try_model(gpu_id, run_name, project_name):
     try:
         # Run model
-        model.main(gpu_id)
+        model.main(gpu_id, project_name, run_name)
     except KeyboardInterrupt:
         quit('Quit by KeyboardInterrupt')
 
