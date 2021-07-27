@@ -3,7 +3,8 @@ Nicolas Masse 2017
 Contributions from Gregory Grant, Catherine Lee
 """
 
-import tensorflow as tf
+#import tensorflow as tf
+import tensorflow.compat.v1 as tf; tf.disable_eager_execution()
 import numpy as np
 import stimulus
 import analysis
