@@ -911,7 +911,7 @@ def rnn_cell_loop(x_unstacked, h, syn_x, syn_u, weights, suppress_activity):
             h, syn_x, syn_u = rnn_cell(np.squeeze(rnn_input), h, syn_x, syn_u, weights, suppress_activity[t])
         else:
             h, syn_x, syn_u = rnn_cell(np.squeeze(rnn_input), h, syn_x, syn_u, weights, 1)
-        print('h ', h.shape, ' syn_x ', syn_x.shape, ' syn_u ', syn_u.shape)
+        #print('h ', h.shape, ' syn_x ', syn_x.shape, ' syn_u ', syn_u.shape)
 
         h_hist.append(h)
         syn_x_hist.append(syn_x)
