@@ -217,6 +217,8 @@ def save_results(model_performance, weights,  save_fn = None):
     results = {'weights': weights, 'parameters': par}
     for k,v in model_performance.items():
         results[k] = v
+    if not os.path.exists(par['save_dir']):
+        os.makedirs(par['save_dir'])
     if save_fn is None:
         fn = par['save_dir'] + par['save_fn']
     else:
