@@ -13,12 +13,12 @@ Independent parameters
 par = {
     # Setup parameters
     'save_dir'              : './savedir/',
-    'save_fn'               : 'model_results.pkl',
+    'save_fn'               : 'model_results.pkl',  # save file name
 
     # Network configuration
     'synapse_config'        : 'full', # full is half facilitating, half depressing. See line 295 for all options
     'exc_inh_prop'          : 0.8,    # excitatory/inhibitory ratio, set to 1 so that units are neither exc or inh
-    'balance_EI'            : True,
+    'balance_EI'            : True,   # ?
     'connection_prob'       : 1.,
 
     # Network shape
@@ -29,24 +29,24 @@ par = {
     'n_output'              : 3,
 
     # Timings and rates
-    'dt'                    : 10,
+    'dt'                    : 10,       # time length of step (ms). 'time step' in paper.
     'learning_rate'         : 2e-2,
-    'membrane_time_constant': 100,
+    'membrane_time_constant': 100,      # 'neuron time constant' in paper. unit: ms.
 
     # Input and noise
-    'input_mean'            : 0.0,
+    'input_mean'            : 0.0,      # mean of input noise. default value: 0.
     'noise_in_sd'           : 0.1,
     'noise_rnn_sd'          : 0.5,
 
     # Tuning function data
-    'num_motion_dirs'       : 8,
+    'num_motion_dirs'       : 8,        # the number of motion directions.
     'tuning_height'         : 4,        # magnitutde scaling factor for von Mises
     'kappa'                 : 2,        # concentration scaling factor for von Mises
 
     # Loss parameters
     'spike_regularization'  : 'L2', # 'L1' or 'L2'
-    'spike_cost'            : 2e-2,
-    'weight_cost'           : 0.,
+    'spike_cost'            : 2e-2,     # 'beta' and 'penalty term on firing rates'
+    'weight_cost'           : 0.,       # ?????
     'clip_max_grad_val'     : 0.1,
 
     # Synaptic plasticity specs
@@ -71,7 +71,7 @@ par = {
     'variable_delay_max'    : 300,
     'mask_duration'         : 50,  # duration of traing mask after test onset
     'catch_trial_pct'       : 0.0,
-    'num_receptive_fields'  : 1,
+    'num_receptive_fields'  : 1,        # the number of inputs having the same value. depth.
     'num_rules'             : 1, # this will be two for the DMS+DMRS task
     'test_cost_multiplier'  : 1.,
     'rule_cue_multiplier'   : 1.,
