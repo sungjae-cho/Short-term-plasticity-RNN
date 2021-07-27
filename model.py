@@ -5,6 +5,8 @@ Contributions from Gregory Grant, Catherine Lee
 
 #import tensorflow as tf
 import tensorflow.compat.v1 as tf; tf.disable_eager_execution()
+import argparse
+import wandb
 import numpy as np
 import stimulus
 import analysis
@@ -139,7 +141,9 @@ class Model:
         self.train_op = opt.apply_gradients(capped_gvs)
 
 
-def main(gpu_id = None):
+def main(gpu_id = None, project_name = 'STSP-EIRNN', run_name = 'run'):
+
+    wandb.init(name=run_name, project=project_name)
 
     if gpu_id is not None:
         os.environ["CUDA_VISIBLE_DEVICES"] = gpu_id
@@ -171,7 +175,7 @@ def main(gpu_id = None):
         model_performance = {'accuracy': [], 'loss': [], 'perf_loss': [], 'spike_loss': [], \
             'weight_loss': [], 'iteration': []}
 
-
+        t_start = time.perf_counter()
         for i in range(par['num_iterations']):
 
             # generate batch of batch_train_size
@@ -182,19 +186,31 @@ def main(gpu_id = None):
                 sess.run([model.train_op, model.loss, model.perf_loss, model.spike_loss, \
                 model.weight_loss, model.y, model.h, model.syn_x, model.syn_u], \
                 {x: trial_info['neural_input'], t: trial_info['desired_output'], m: trial_info['train_mask']})
-
             accuracy, _, _ = analysis.get_perf(trial_info['desired_output'], y, trial_info['train_mask'])
 
             model_performance = append_model_performance(model_performance, accuracy, loss, perf_loss, spike_loss, weight_loss, i)
 
+            # log through wandb
+            wandb.log({
+                'accuracy': accuracy,
+                'loss': loss,
+                'perf_loss': perf_loss,
+                'spike_loss': spike_loss,
+                'weight_loss': weight_loss,
+                'iteration': i,
+            }, step=i)
             # Save the network model and output model performance to screen
             if i%par['iters_between_outputs']==0:
                 print_results(i, perf_loss, spike_loss, weight_loss, h, accuracy)
 
         # Save model and results
+        print_results(i, perf_loss, spike_loss, weight_loss, h, accuracy)
+        training_duration = time.perf_counter() - t_start
+        print(f'training duation: {training_duration} sec')
         weights = sess.run(model.var_dict)
         save_results(model_performance, weights)
 
+        wandb.finish()
 
 def save_results(model_performance, weights,  save_fn = None):
 
@@ -234,3 +250,14 @@ def print_important_params():
         'delay_time', 'connection_prob','synapse_config','tau_slow','tau_fast']
     for k in important_params:
         print(k, ': ', par[k])
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-r', '--run_name', type=str,
+        help='give a distinct name for this running')
+    parser.add_argument('-p', '--prj_name', type=str, default='STSP-EIRNN',
+        help='give a project name for this running')
+    parser.add_argument('-g', '--visible_gpus', type=str, default="0",
+                        required=False, help='CUDA visible GPUs')
+    args = parser.parse_args()
+    main(args.visible_gpus, args.prj_name, args.run_name)
