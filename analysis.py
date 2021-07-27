@@ -27,6 +27,7 @@ neuron_groups.append(range(par['n_hidden']))
 def run_multiple():
 
     task_list = ['DMS']
+    n_networks = 20
 
     update_params = {
         'decode_stability':         False,
@@ -43,8 +44,10 @@ def run_multiple():
 
 
     for t in task_list:
-        for j in range(20):
-            fn = data_dir + t + str(j) + '.pkl'
+        for j in range(n_networks):
+            #run_name = '{}{}'.format(t, str(j))
+            run_name = '{}-run-{}'.format(t, str(j))
+            fn = data_dir + run_name + '.pkl'
             print('Analyzing ', fn)
             analyze_model_from_file(fn, savefile = fn, update_params = update_params)
 
