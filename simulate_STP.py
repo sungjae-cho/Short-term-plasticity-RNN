@@ -19,33 +19,47 @@ def run_simulation():
         else:
             spike = 0
         x[t+1], u[t+1] = run_sim_step(x[t], u[t], alpha_std, alpha_stf, U, spike)
-      
-    t = (time_pts -  500//delta_t)*delta_t 
-    f = plt.figure(figsize=(8,6))
-    ax = f.add_subplot(3, 1, 1)
 
-    ax.plot(t,s[1:],'k')
+    t = (time_pts -  500//delta_t)*delta_t
+    f = plt.figure(figsize=(16,12))
+    ax = f.add_subplot(4, 1, 1)
+
+    ax.plot(t,s[1:],'k', label='stimulus')
     ax.spines['right'].set_visible(False)
     ax.spines['top'].set_visible(False)
     ax.xaxis.set_ticks_position('bottom')
     ax.yaxis.set_ticks_position('left')
-    
-    ax = f.add_subplot(3, 1, 2)
-    ax.hold(True)
-    ax.plot(t,x[1:])
-    ax.plot(t,u[1:],'r')
+    ax.legend()
+
+    ax = f.add_subplot(4, 1, 2)
+    ax.plot(t,x[1:],'b', label='x: fraction of available neurotransmitter')
+    ax.plot(t,u[1:],'r', label='u: neurotransmitter utilization')
     ax.spines['right'].set_visible(False)
     ax.spines['top'].set_visible(False)
     ax.xaxis.set_ticks_position('bottom')
     ax.yaxis.set_ticks_position('left')
-    
-    ax = f.add_subplot(3, 1, 3)
-    ax.plot(t,u[1:]*x[1:]/U,'k')
+    ax.legend()
+
+    ax = f.add_subplot(4, 1, 3)
+    ax.axhline(U,c='g', label='pre_u')
+    ax.plot(t,u[1:]*x[1:]/U,'k', label='u*x/pre_u')
     ax.spines['right'].set_visible(False)
     ax.spines['top'].set_visible(False)
     ax.xaxis.set_ticks_position('bottom')
     ax.yaxis.set_ticks_position('left')
-    
+    ax.legend()
+
+    ax = f.add_subplot(4, 1, 4)
+    ax.axhline(U,c='g', label='pre_u')
+    ax.plot(t,x[1:],'b', label='x')
+    ax.plot(t,u[1:],'r', label='u')
+    ax.plot(t,u[1:]*x[1:]/U,'k', label='u*x/pre_u')
+    ax.spines['right'].set_visible(False)
+    ax.spines['top'].set_visible(False)
+    ax.xaxis.set_ticks_position('bottom')
+    ax.yaxis.set_ticks_position('left')
+    ax.legend()
+
     plt.savefig('std.pdf', format='pdf')
     plt.show()
 
